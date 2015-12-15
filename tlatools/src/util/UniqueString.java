@@ -2,6 +2,8 @@
 // Last modified on Wed Oct 17 15:25:39 PDT 2001 by yuanyu
 package util;
 
+import java.io.DataInput;
+import java.io.DataOutput;
 import java.io.IOException;
 import java.io.Serializable;
 
@@ -288,6 +290,14 @@ public final class UniqueString implements Serializable
         dos.writeString(this.s);
     }
 
+    public final void write(DataOutput dout) throws IOException
+    {
+        dout.writeInt(this.tok);
+        dout.writeInt(this. getVarLoc()); 
+         // Above changed from dos.writeInt(this.loc); by Yuan Yu on 17 Mar 2010
+        dout.writeUTF(this.s);
+    }
+
     /**
      * Utility method for reading a unique string from the stream
      * @param dis
@@ -305,6 +315,13 @@ public final class UniqueString implements Serializable
         return new UniqueString(str, tok1, loc1);
     }
 
+    public static UniqueString read(DataInput din) throws IOException
+    {
+        int tok1 = din.readInt();
+        int loc1 = din.readInt();
+        String str = din.readUTF();
+        return new UniqueString(str, tok1, loc1);
+    }
 
     /**
      * Sets the source 

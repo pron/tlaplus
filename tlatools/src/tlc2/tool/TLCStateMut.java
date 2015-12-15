@@ -5,7 +5,10 @@
 
 package tlc2.tool;
 
+import java.io.Externalizable;
 import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.io.Serializable;
 
 import tla2sany.semantic.SemanticNode;
@@ -15,7 +18,9 @@ import tlc2.util.Context;
 import tlc2.util.FP64;
 import tlc2.value.MVPerm;
 import tlc2.value.Value;
+import tlc2.value.ValueInput;
 import tlc2.value.ValueInputStream;
+import tlc2.value.ValueOutput;
 import tlc2.value.ValueOutputStream;
 import util.UniqueString;
 import util.WrongInvocationException;
@@ -28,7 +33,7 @@ import util.WrongInvocationException;
  *
  * The viewMap was added by Rajeev Joshi.
  */
-public final class TLCStateMut extends TLCState implements Cloneable, Serializable {
+public final class TLCStateMut extends TLCState implements Cloneable, Serializable, Externalizable {
   private Value values[];
   private static Tool mytool = null;
 
@@ -44,6 +49,8 @@ public final class TLCStateMut extends TLCState implements Cloneable, Serializab
    */
   private static MVPerm[] perms = null;
 
+  public TLCStateMut() {/*Used for serialization by distributed TLC*/};
+  
   private TLCStateMut(Value[] vals) { this.values = vals; }
 
   public static void init(Tool tool) {
@@ -292,4 +299,28 @@ public final class TLCStateMut extends TLCState implements Cloneable, Serializab
     return result.toString();
   }
 
+	/* (non-Javadoc)
+	 * @see java.io.Externalizable#writeExternal(java.io.ObjectOutput)
+	 */
+	public void writeExternal(final ObjectOutput out) throws IOException {
+		final ValueOutput vo = new ValueOutput(out);
+	    final int len = this.values.length;
+	    for (int i = 0; i < len; i++) {
+	      vo.write(this.values[i]);
+	    }
+	}
+
+	/* (non-Javadoc)
+	 * @see java.io.Externalizable#readExternal(java.io.ObjectInput)
+	 */
+	public void readExternal(final ObjectInput in) throws IOException, ClassNotFoundException {
+		values = new Value[vars.length];
+
+		final ValueInput vi = new ValueInput(in);
+		
+	    final int len = this.values.length;
+	    for (int i = 0; i < len; i++) {
+	      this.values[i] = vi.read();
+	    }
+	}
 }

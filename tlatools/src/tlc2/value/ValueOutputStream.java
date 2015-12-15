@@ -15,8 +15,8 @@ import util.WrongInvocationException;
 
 public final class ValueOutputStream implements ValueConstants {
 
-  private BufferedDataOutputStream dos;
-  private HandleTable handles;
+  private final BufferedDataOutputStream dos;
+  private final HandleTable handles;
 
   public ValueOutputStream(File file) throws IOException {
     if (TLCGlobals.useGZIP) {
