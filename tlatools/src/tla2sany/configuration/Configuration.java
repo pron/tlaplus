@@ -15,13 +15,13 @@ import tla2sany.st.Location;
 import util.ToolIO;
 import util.UniqueString;
 
-public final class Configuration implements ConfigConstants, ConfigurationConstants {
+public final class Configuration implements ConfigurationConstants {
 
   private static Errors         errors;
   private static java.io.Reader input;
 
   public static void displayDefinitions() {
-    ToolIO.out.println( defaultConfig );
+    ToolIO.out.println( ConfigConstants.defaultConfig );
   }
 
   public static void load (Errors errs ) throws AbortException {
@@ -39,7 +39,7 @@ public final class Configuration implements ConfigConstants, ConfigurationConsta
         input = new java.io.FileReader( source );
         origin = " from local config.src file.";
       } else {
-        input = new java.io.StringReader( defaultConfig );
+        input = new java.io.StringReader( ConfigConstants.defaultConfig );
         origin = " from defaults.";
       }
       Parser = new Configuration( input );
@@ -60,10 +60,8 @@ public final class Configuration implements ConfigConstants, ConfigurationConsta
   // The following method added by DRJ.
   static public void ReInit() {
     jj_initialized_once = false;
-    if (jj_input_stream != null) {
-        jj_input_stream.ReInit(input, 1, 1);
-        token_source.ReInit(jj_input_stream);
-    }
+    jj_input_stream = null;
+    ConfigurationTokenManager.ReInit(null);
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
