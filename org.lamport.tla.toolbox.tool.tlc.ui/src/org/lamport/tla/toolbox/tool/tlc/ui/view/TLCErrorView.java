@@ -83,6 +83,7 @@ import org.lamport.tla.toolbox.tool.tlc.ui.util.TLCUIHelper;
 import org.lamport.tla.toolbox.tool.tlc.util.ModelHelper;
 import org.lamport.tla.toolbox.util.FontPreferenceChangeListener;
 import org.lamport.tla.toolbox.util.IHelpConstants;
+import org.lamport.tla.toolbox.util.TLATreeViewer;
 import org.lamport.tla.toolbox.util.UIHelper;
 
 import tla2unicode.Unicode;
@@ -203,7 +204,7 @@ public class TLCErrorView extends ViewPart
             IDocument document = errorViewer.getDocument();
             try
             {
-                document.replace(0, document.getLength(), Unicode.convert(TLAUnicodeReplacer.UNICODE_MODE, buffer.toString()));
+                document.replace(0, document.getLength(), Unicode.convert(TLAUnicodeReplacer.isUnicode(), buffer.toString()));
                 TLCUIHelper.setTLCLocationHyperlinks(errorViewer.getTextWidget());
             } catch (BadLocationException e)
             {
@@ -411,7 +412,7 @@ public class TLCErrorView extends ViewPart
         
         tree.addControlListener(resizer);
 
-        variableViewer = new TreeViewer(tree);
+        variableViewer = new TLATreeViewer(tree);
         final StateContentProvider provider = new StateContentProvider(variableViewer);
         variableViewer.setUseHashlookup(true);
 		variableViewer.setContentProvider(provider);
@@ -1193,7 +1194,7 @@ public class TLCErrorView extends ViewPart
 		 */
 		public void update(ViewerCell cell) {
 			// labels
-			cell.setText(Unicode.convert(TLAUnicodeReplacer.UNICODE_MODE, getColumnText(cell.getElement(), cell.getColumnIndex())));
+			cell.setText(Unicode.convert(TLAUnicodeReplacer.isUnicode(), getColumnText(cell.getElement(), cell.getColumnIndex())));
 			
 			// images
 			cell.setImage(getColumnImage(cell.getElement(), cell.getColumnIndex()));
